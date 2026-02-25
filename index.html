@@ -4,40 +4,146 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WebAR Lab - Model Viewer</title>
-    <!-- model-viewer web component -->
+    <title>WebAR Lab - 3D Model Viewer</title>
+
+    <!-- Google model-viewer web component -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
             font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         header {
             padding: 12px 16px;
+            background: linear-gradient(135deg, #16213e, #0f3460);
+            border-bottom: 2px solid #e94560;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        model-viewer {
-            width: 100vw;
-            height: calc(100vh - 56px);
-            background: #f5f5f5;
+        header h2 {
+            font-size: 18px;
+            color: #fff;
         }
 
         .hint {
-            color: #444;
-            font-size: 14px;
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        #btn-rotate {
+            background: #e94560;
+            color: white;
+        }
+
+        #btn-rotate:hover {
+            background: #c73652;
+        }
+
+        #btn-bg {
+            background: #0f3460;
+            color: white;
+            border: 1px solid #e94560;
+        }
+
+        #btn-bg:hover {
+            background: #1a4a80;
+        }
+
+        model-viewer {
+            flex: 1;
+            width: 100%;
+            background: #f0f0f0;
+        }
+
+        /* AR товч байрлал */
+        model-viewer::part(default-ar-button) {
+            bottom: 16px;
+            right: 16px;
+        }
+
+        footer {
+            padding: 8px 16px;
+            background: #16213e;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
+
     <header>
-        <h3 style="margin:0;">QR → WebAR Lab</h3>
-        <div class="hint">3D-гээ эргүүлж/томруулж болно. AR товчийг дарж камер дээр байрлуул.</div>
+        <div>
+            <h2>📱 WebAR Lab — 3D Viewer</h2>
+            <div class="hint">3D объектыг эргүүл, томруул. AR товчийг дарж камер дээр байрлуул!</div>
+        </div>
+        <div class="controls">
+            <button id="btn-rotate" onclick="toggleRotate()">⏸ Auto-rotate: ON</button>
+            <button id="btn-bg" onclick="toggleBg()">🎨 Background өөрчлөх</button>
+        </div>
     </header>
-    <model-viewer src="assets/model.glb" ar ar-modes="scene-viewer webxr quick-look" camera-controls auto-rotate
-        shadow-intensity="0.8" alt="3D model in AR">
+
+    <model-viewer id="viewer" src="model.glb" ar ar-modes="scene-viewer webxr quick-look" camera-controls auto-rotate
+        shadow-intensity="0.8" alt="3D AR Model">
     </model-viewer>
+
+    <footer>WebAR Лабораторийн ажил №4 · model-viewer · GitHub Pages</footer>
+
+    <script>
+        const viewer = document.getElementById('viewer');
+        const btnRotate = document.getElementById('btn-rotate');
+        let rotating = true;
+
+        // Auto-rotate ON/OFF товч
+        function toggleRotate() {
+            rotating = !rotating;
+            viewer.autoRotate = rotating;
+            btnRotate.textContent = rotating ? '⏸ Auto-rotate: ON' : '▶ Auto-rotate: OFF';
+        }
+
+        // Background өнгө солих
+        const backgrounds = ['#f0f0f0', '#1a1a2e', '#e8f5e9', '#fff3e0', '#e3f2fd'];
+        let bgIndex = 0;
+        function toggleBg() {
+            bgIndex = (bgIndex + 1) % backgrounds.length;
+            viewer.style.background = backgrounds[bgIndex];
+        }
+    </script>
+
 </body>
 
 </html>
